@@ -1,0 +1,58 @@
+"use client";
+import { Ellipsis, Trash } from "lucide-react";
+import { useState, useRef } from "react";
+import DeleateButton from "./deleteButton";
+import { useOnClickOutside } from "usehooks-ts";
+import Link from "next/link";
+
+const PostMenu = ({
+  category,
+  slug,
+  id,
+  isAuthor,
+}: {
+  category: string;
+  slug: string;
+  id: string;
+  isAuthor: boolean;
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleToggle = () => {
+    setIsOpen(isOpen ? false : true);
+  };
+  useOnClickOutside(ref as React.RefObject<HTMLDivElement>, () =>
+    setIsOpen(false),
+  );
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => handleToggle()}
+        className="relative rounded-full hover:bg-purple active:bg-purple/70 p-1.5"
+      >
+        <Ellipsis />
+      </button>
+      {isOpen && (
+        <div className="absolute bg-white w-50 h-20 shadow-md">
+          <ul>
+            {isAuthor && (
+              <>
+                <li className="p-2">
+                  <Link href={`/${category}/${slug}/edit`}>Edit Post</Link>
+                </li>
+                <li className="hover:bg-red-300 flex gap-2 p-2">
+                  <Trash />
+                  <DeleateButton id={id} />
+                </li>
+              </>
+            )}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default PostMenu;
