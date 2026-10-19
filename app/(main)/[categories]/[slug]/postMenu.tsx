@@ -1,5 +1,5 @@
 "use client";
-import { Ellipsis, Trash } from "lucide-react";
+import { Ellipsis, Pencil, Trash } from "lucide-react";
 import { useState, useRef } from "react";
 import DeleateButton from "./deleteButton";
 import { useOnClickOutside } from "usehooks-ts";
@@ -39,8 +39,14 @@ const PostMenu = ({
           <ul>
             {isAuthor && (
               <>
-                <li className="p-2">
-                  <Link href={`/${category}/${slug}/edit`}>Edit Post</Link>
+                <li className="p-2 hover:bg-gray-200">
+                  <Link
+                    href={`/${category}/${slug}/edit`}
+                    className=" flex gap-2 "
+                  >
+                    <Pencil />
+                    Edit Post
+                  </Link>
                 </li>
                 <li className="hover:bg-red-300 flex gap-2 p-2">
                   <Trash />

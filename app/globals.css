@@ -16,10 +16,21 @@
   --color-well-read: #b83232;
   --color-san-juan: #324b73;
   --color-silk-white: #eaeff5;
+
+  --font-poppins: "Poppins", sans-serif;
+  --font-fredoka: "Fredoka", sans-serif;
 }
 
 .button {
-  @apply cursor-pointer block p-4 rounded-xl bg-cornflower-blue text-silk-white text-2xl font-bold;
+  @apply cursor-pointer block p-3 my-4 rounded-full bg-purple text-silk-white text-2xl font-bold;
+}
+
+.form-wrapper {
+  @apply bg-white p-4 w-full rounded-xl shadow-md;
+}
+
+.form {
+  @apply flex flex-col max-w-md m-auto rounded-md py-4;
 }
 
 .button-secondary {
@@ -27,5 +38,13 @@
 }
 
 .input {
-  @apply border-cornflower-blue border rounded-2xl my-2;
+  @apply border border-purple rounded-2xl w-full p-2  mb-6;
+}
+
+.label {
+  @apply font-bold py-2;
+}
+
+.formTitle {
+  @apply text-center font-bold text-2xl py-4 md:py-8;
 }

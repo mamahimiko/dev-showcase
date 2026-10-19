@@ -1,9 +1,10 @@
 "use client";
 import { searchPosts, SearchResultPostType } from "@/lib/supabase/queries";
+import { Search } from "lucide-react";
 import Link from "next/link";
 import { SetStateAction, useState } from "react";
 
-const Search = () => {
+const SearchBox = () => {
   const [input, setInput] = useState<string>("");
   const [searchResults, setSearchResults] =
     useState<SearchResultPostType | null>(null);
@@ -21,15 +22,18 @@ const Search = () => {
 
   return (
     <>
-      <div className="">
+      <div className="flex">
         <input
           onChange={handleChange}
           placeholder="Search for posts"
           value={input}
-          className="border"
+          className="border bg-white px-6 py-1 rounded-full"
         />
-        <button onClick={handleClick} className="border">
-          Search
+        <button
+          onClick={handleClick}
+          className="border rounded-full p-1 bg-soft-blue text-white"
+        >
+          <Search size={22}/>
         </button>
       </div>
       {searchResults && (
@@ -50,4 +54,4 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default SearchBox;

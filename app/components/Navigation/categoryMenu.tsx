@@ -1,6 +1,7 @@
 "use client";
 
 import { categoryList } from "@/app/data/data";
+import { LayoutList } from "lucide-react";
 import Link from "next/link";
 import { useState, useRef } from "react";
 import { useOnClickOutside } from "usehooks-ts";
@@ -20,7 +21,10 @@ const CategoryMenu = () => {
   return (
     <div ref={ref}>
       <button onClick={() => handleToggle()} className="relative">
-        Categories
+        <span className="hidden lg:block">Categories</span>
+        <span className="lg:hidden">
+          <LayoutList />
+        </span>
       </button>
       {isOpen && (
         <div className="absolute bg-blue-300 w-50 rounded-b-2xl">

@@ -1,8 +1,10 @@
-import { getSinglePost } from "@/lib/supabase/queries";
+import { getPostComments, getSinglePost } from "@/lib/supabase/queries";
 import { createClient } from "@/lib/supabase/server-client";
 import PostMenu from "./postMenu";
 import avater from "@/public/avater.png";
 import Image from "next/image";
+import CommentsPost from "./comments";
+import AddComment from "./addComment";
 
 const PostPage = async ({ params }: { params: { slug: string } }) => {
   const { slug } = await params;
@@ -10,7 +12,6 @@ const PostPage = async ({ params }: { params: { slug: string } }) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  console.log(user);
   const { data, error } = await getSinglePost(slug);
   const isAuthor: boolean =
     user && data && user.id === data.author.id ? true : false;
@@ -18,38 +19,62 @@ const PostPage = async ({ params }: { params: { slug: string } }) => {
   return (
     <div className="bg-base-white min-h-300">
       <div className="max-w-400 flex justify-center ">
-        {data && (
-          <div className="flex flex-col min-w-180 p-6 border bg-white rounded-2xl">
-            <div className="bg-accent text-soft-blue px-2 rounded-full w-max my-4">
-              <span className="font-bold">{data.category}</span>
-            </div>
-            <div className="flex justify-between">
-              <div className="flex gap-3 items-center">
-                <Image src={avater} alt="avater" className="w-10" />
-                <p>{data.author.username}</p>
+        <div className="flex flex-col min-w-180 p-6  bg-white rounded-2xl">
+          {data && (
+            <>
+              <div className="bg-accent text-soft-blue px-2 rounded-full w-max my-4">
+                <span className="font-bold text-sm">{data.category}</span>
               </div>
-              <PostMenu
-                category={data.category}
-                slug={slug}
-                id={data.id}
-                isAuthor={isAuthor}
-              />
-            </div>
-            <h1 className="text-3xl py-4">{data.title}</h1>
-            {data.image && (
-              <div>
-                <div className="flex justify-center bg-white">
-                  <img src={data.image} className="h-100" />
+              <div className="flex justify-between">
+                <div className="flex gap-3 items-center">
+                  {data.author.avatar ? (
+                    <img
+                      src={data.author.avatar}
+                      alt="avater"
+                      className="w-10 h-10 rounded-full"
+                    />
+                  ) : (
+                    <Image src={avater} alt="avater" className="w-10" />
+                  )}
+
+                  <div>
+                    <p className="text-lg font-bold leading-tight">
+                      {data.author.username}
+                    </p>
+                    <p className="text-sm leading-tight">
+                      {data.author.career}
+                    </p>
+                  </div>
                 </div>
+                <PostMenu
+                  category={data.category}
+                  slug={slug}
+                  id={data.id}
+                  isAuthor={isAuthor}
+                />
               </div>
-            )}
-            {data.content && (
-              <div className="py-8">
-                <p>{data.content}</p>
-              </div>
-            )}
-          </div>
-        )}
+              <h1 className="text-3xl py-4 font-bold">{data.title}</h1>
+              {data.image && (
+                <div>
+                  <div className="flex justify-center bg-white">
+                    <img src={data.image} className="h-100" />
+                  </div>
+                </div>
+              )}
+              {data.content && (
+                <div className="py-8">
+                  <p>{data.content}</p>
+                </div>
+              )}
+              <CommentsPost
+                postid={data.id}
+                isAuthor={isAuthor}
+                userId={user ? user.id : null}
+              />
+              {user && <AddComment postId={data.id} />}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -43,7 +43,7 @@ const EditPageForm = ({
   });
 
   return (
-    <div>
+    <div className="form-wrapper">
       <form
         onSubmit={handleSubmit(
           (values) => {
@@ -65,8 +65,7 @@ const EditPageForm = ({
           },
           (errors) => console.log(errors),
         )}
-        className="flex flex-col w-full m-auto border-red-200 border-3 rounded-2xl p-4
-      text-left"
+        className="form"
       >
         <label htmlFor="title">Add a title</label>
         <input className="input px-3" {...register("title")}></input>

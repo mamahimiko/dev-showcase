@@ -5,11 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "@/app/components/ErrorMessage";
 import { useMutation } from "@tanstack/react-query";
+import z from "zod";
 
 export const userLevel = [
   {
     id: 1,
-    name: "beginner",
+    name: "Beginner",
   },
   {
     id: 2,
@@ -26,12 +27,21 @@ export const userLevel = [
 ];
 
 const SignUpForm = () => {
+  const signinWithImageSchema = signUpSchema.omit({ image: true }).extend({
+    image: z
+      .unknown()
+      .transform((value) => {
+        return value as FileList;
+      })
+      .optional(),
+  });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(signUpSchema),
+    resolver: zodResolver(signinWithImageSchema),
   });
 
   const { mutate, error, isPending } = useMutation({
@@ -39,33 +49,53 @@ const SignUpForm = () => {
   });
 
   return (
-    <div>
+    <div className="form-wrapper">
       <form
-        onSubmit={handleSubmit((values) => mutate(values))}
-        className="flex flex-col max-w-md m-auto border-amber-500 border rounded-sm p-4"
+        onSubmit={handleSubmit((values) => {
+          const imageForm = new FormData();
+          if (values.image) imageForm.append("image", values.image[0]);
+
+          mutate({
+            username: values.username,
+            email: values.email,
+            password: values.password,
+            career: values.career,
+            image: imageForm,
+          });
+        })}
+        className="form"
       >
-        <label htmlFor="username"></label>
+        <h2 className="formTitle">SIGN IN</h2>
+        <label htmlFor="username" className="label">
+          User Name
+        </label>
         <input
           placeholder="Username ..."
           {...register("username")}
           className="input"
         />
         {errors.username && <ErrorMessage error={errors.username.message!} />}
-        <label htmlFor="email"></label>
+        <label htmlFor="email" className="label">
+          Email
+        </label>
         <input
           placeholder="Email address ..."
           {...register("email")}
           className="input"
         />
         {errors.email && <ErrorMessage error={errors.email.message!} />}
-        <label htmlFor="password"></label>
+        <label htmlFor="password" className="label">
+          Password
+        </label>
         <input
           placeholder="Password ..."
           {...register("password")}
           className="input"
         />
         {errors.password && <ErrorMessage error={errors.password.message!} />}
-        <label htmlFor="level"></label>
+        <label htmlFor="level" className="label">
+          Your Level
+        </label>
         <select className="input" {...register("career")}>
           {userLevel.map((level) => (
             <option key={level.id} value={level.name}>
@@ -73,6 +103,11 @@ const SignUpForm = () => {
             </option>
           ))}
         </select>
+        <label htmlFor="Image" className="label">
+          Add Your Avatar (optional)
+        </label>
+        <input type="file" className="input" {...register("image")} />
+        {errors.image && <ErrorMessage error={errors.image.message!} />}
         <button className="button">Sign up now!</button>
         {error && <ErrorMessage error={error.message} />}
       </form>

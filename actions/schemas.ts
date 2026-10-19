@@ -10,6 +10,7 @@ export const signUpSchema = z.object({
   password: z.string().min(5, "Zod says not! passwords must be 5 characters!"),
   username: z.string().min(6, "You need at least 6 characters!"),
   career: z.string("Please put in!"),
+  image: z.instanceof(FormData).optional(),
 });
 
 export const postSchema = z.object({
@@ -17,4 +18,8 @@ export const postSchema = z.object({
   content: z.string().optional(),
   category: z.string("Please put in!"),
   image: z.instanceof(FormData).optional(),
+});
+
+export const commentSchema = z.object({
+  content: z.string().min(3, "Comments must be at least 3 characters long"),
 });

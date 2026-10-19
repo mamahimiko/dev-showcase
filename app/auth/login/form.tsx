@@ -19,19 +19,24 @@ const LoginForm = () => {
   console.log(error);
 
   return (
-    <div>
+    <div className="form-wrapper">
       <form
         onSubmit={handleSubmit((values) => mutate(values))}
-        className="flex flex-col max-w-md m-auto border-amber-500 border rounded-sm p-4"
+        className="form"
       >
-        <label htmlFor="email" />
+        <h2 className="formTitle">LOG IN</h2>
+        <label htmlFor="email" className="label">
+          Email
+        </label>
         <input
           placeholder="Email address ..."
           {...register("email")}
           className="input"
         ></input>
         {errors.email && <ErrorMessage error={errors.email.message!} />}
-        <label htmlFor="password"></label>
+        <label htmlFor="password" className="label">
+          Password
+        </label>
         <input
           placeholder="Password ..."
           {...register("password")}

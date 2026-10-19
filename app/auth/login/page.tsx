@@ -3,10 +3,16 @@ import LoginForm from "./form";
 
 const LoginPage = () => {
   return (
-    <div>
-      <h2 className="text-center">Log In!</h2>
-      <LoginForm />
-      <Link href="/auth/signup">Don't have an account? Sign up here.</Link>
+    <div className="bg-base-white flex flex-1  flex-col items-center justify-center">
+      <div className="flex flex-col items-center md:w-[40%]">
+        <LoginForm />
+        <Link
+          href="/auth/signup"
+          className="cursor-pointer hover:text-soft-blue py-4"
+        >
+          Don't have an account? Sign up here.
+        </Link>
+      </div>
     </div>
   );
 };

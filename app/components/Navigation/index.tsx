@@ -1,16 +1,22 @@
 import Link from "next/link";
 import AccountLinkes from "./accountLinkes";
 import CategoryMenu from "./categoryMenu";
-import Search from "../Header/search";
+import SearchBox from "../Header/search";
+import { Home } from "lucide-react";
 
 const Navigation = () => {
   return (
-    <div className=" bg-base-white">
-      <nav className="flex justify-between px-20">
+    <div className=" bg-base-white py-2">
+      <nav className="flex justify-between lg:px-20 items-center">
         <div className="">
           <ul className="flex gap-4">
             <li>
-              <Link href={"/"}>Discover</Link>
+              <Link href={"/"} className="hidden lg:block">
+                Home
+              </Link>
+              <Link href={"/"} className="lg:hidden">
+                <Home />
+              </Link>
             </li>
             <li>
               <CategoryMenu />
@@ -22,7 +28,7 @@ const Navigation = () => {
             </li>
           </ul>
         </div>
-        <Search />
+        <SearchBox />
         <div>
           <AccountLinkes />
         </div>

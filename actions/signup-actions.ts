@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server-client";
 import { redirect } from "next/navigation";
 import z from "zod";
 import { signUpSchema } from "./schemas";
+import { uploadImage } from "@/lib/supabase/upload-image";
 
 export const SignUp = async (userdata: z.infer<typeof signUpSchema>) => {
   const supabase = await createClient();
@@ -12,6 +13,13 @@ export const SignUp = async (userdata: z.infer<typeof signUpSchema>) => {
     error,
   } = await supabase.auth.signUp(userdata);
 
+  const imageFile = userdata.image?.get("image");
+  if (!(imageFile instanceof File) && imageFile !== null) {
+    throw Error("Image is not in a valid format");
+  }
+
+  const imageUrl = imageFile ? await uploadImage(imageFile) : null;
+
   if (user && user.email) {
     const { data, error } = await supabase.from("users").insert({
       id: user.id,
@@ -19,6 +27,7 @@ export const SignUp = async (userdata: z.infer<typeof signUpSchema>) => {
       username: userdata.username,
       bio: "",
       career: userdata.career,
+      avatar: imageUrl
     });
     if (error) throw error;
   }

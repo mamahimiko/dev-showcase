@@ -1,5 +1,6 @@
 import { LogOut } from "@/actions/logout-action";
 import { createClient } from "@/lib/supabase/server-client";
+import { Plus } from "lucide-react";
 import Link from "next/link";
 
 const AccountLinkes = async () => {
@@ -13,17 +14,16 @@ const AccountLinkes = async () => {
     <div className="flex gap-4">
       {user ? (
         <>
-          <button>
+          <button className="bg-purple py-2 px-4 rounded-full text-white flex gap-2">
+            <Plus />
             <Link href="/create/">Create Post</Link>
           </button>
-          <button className="button" onClick={LogOut}>
+          <button className="" onClick={LogOut}>
             Log Out
           </button>
         </>
       ) : (
         <>
-          <p>Hello guest!</p>
-
           <button>
             <Link href="/auth/login">Log in</Link>
           </button>
