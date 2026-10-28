@@ -14,11 +14,17 @@ export const SignUp = async (userdata: z.infer<typeof signUpSchema>) => {
   } = await supabase.auth.signUp(userdata);
 
   const imageFile = userdata.image?.get("image");
+
   if (!(imageFile instanceof File) && imageFile !== null) {
     throw Error("Image is not in a valid format");
   }
 
-  const imageUrl = imageFile ? await uploadImage(imageFile) : null;
+  const uploadedImage =
+    user && imageFile instanceof File
+      ? await uploadImage(user.id, imageFile)
+      : null;
+
+  const imageUrl = uploadedImage?.image_url ?? null;
 
   if (user && user.email) {
     const { data, error } = await supabase.from("users").insert({
@@ -27,7 +33,7 @@ export const SignUp = async (userdata: z.infer<typeof signUpSchema>) => {
       username: userdata.username,
       bio: "",
       career: userdata.career,
-      avatar: imageUrl
+      avatar: imageUrl,
     });
     if (error) throw error;
   }
