@@ -8,7 +8,6 @@ const Authlayout = ({ children }: { children: React.ReactNode }) => {
     <div className="flex flex-col min-h-screen ">
       <div>
         <Header />
-        <Navigation />
       </div>
       <div className="flex flex-1 flex-col">{children}</div>
     </div>

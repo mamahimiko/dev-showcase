@@ -35,7 +35,7 @@ const PostMenu = ({
         <Ellipsis />
       </button>
       {isOpen && (
-        <div className="absolute bg-white w-50 h-20 shadow-md">
+        <div className="absolute bg-white w-50 h-20 shadow-md right-1 z-10">
           <ul>
             {isAuthor && (
               <>

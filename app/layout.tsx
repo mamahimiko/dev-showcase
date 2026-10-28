@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Poppins, Fredoka } from "next/font/google";
+import { Geist, Geist_Mono, Poppins, Fredoka, Inter } from "next/font/google";
 import "./globals.css";
 
 import { QueryClientProvider } from "@/provider/queryProvider";
 import { Toaster } from "sonner";
+import { cn } from "@/lib/utils";
+
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +39,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} ${fredoka.variable} h-full antialiased`}
+      className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, poppins.variable, fredoka.variable, "font-sans", inter.variable)}
     >
       <body className="min-h-full flex flex-col font-poppins">
         <Toaster />

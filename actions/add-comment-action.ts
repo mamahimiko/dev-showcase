@@ -2,6 +2,7 @@
 import { createClient } from "@/lib/supabase/server-client";
 import z from "zod";
 import { commentSchema } from "./schemas";
+import { revalidatePath } from "next/cache";
 
 export const AddCommentAction = async ({
   commentdata,
@@ -22,4 +23,6 @@ export const AddCommentAction = async ({
     .from("Comments")
     .insert({ postid: postId, userid: user.id, ...parsedData })
     .throwOnError();
+
+  revalidatePath("/");
 };

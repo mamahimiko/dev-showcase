@@ -14,11 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      Categories: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          slug: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          slug: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          slug?: string
+        }
+        Relationships: []
+      }
       Comments: {
         Row: {
           content: string
           created_at: string
           id: string
+          parent_id: string | null
           postid: string
           userid: string
         }
@@ -26,6 +48,7 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
+          parent_id?: string | null
           postid: string
           userid: string
         }
@@ -33,10 +56,18 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          parent_id?: string | null
           postid?: string
           userid?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "Comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "Comments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "comments_postid_fkey"
             columns: ["postid"]
@@ -53,39 +84,80 @@ export type Database = {
           },
         ]
       }
+      PostImages: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          post_id: string
+          sort_order: number
+          storage_path: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          post_id: string
+          sort_order?: number
+          storage_path: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          post_id?: string
+          sort_order?: number
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "PostImages_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "Posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       Posts: {
         Row: {
           author: string
-          category: string
+          category_id: string
           content: string | null
           created_at: string
+          github_url: string | null
           id: string
           image: string | null
           slug: string
           title: string
           user_id: string | null
+          website_url: string | null
         }
         Insert: {
           author: string
-          category: string
+          category_id: string
           content?: string | null
           created_at?: string
+          github_url?: string | null
           id?: string
           image?: string | null
           slug: string
           title: string
           user_id?: string | null
+          website_url?: string | null
         }
         Update: {
           author?: string
-          category?: string
+          category_id?: string
           content?: string | null
           created_at?: string
+          github_url?: string | null
           id?: string
           image?: string | null
           slug?: string
           title?: string
           user_id?: string | null
+          website_url?: string | null
         }
         Relationships: [
           {
@@ -94,6 +166,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["username"]
+          },
+          {
+            foreignKeyName: "posts_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "Categories"
+            referencedColumns: ["id"]
           },
         ]
       }

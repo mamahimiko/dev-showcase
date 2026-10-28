@@ -5,6 +5,9 @@ import avater from "@/public/avater.png";
 import Image from "next/image";
 import CommentsPost from "./comments";
 import AddComment from "./addComment";
+import ImageGallery from "./imageGallery";
+import Link from "next/link";
+import { GlobeCode, PanelsTopLeft } from "lucide-react";
 
 const PostPage = async ({ params }: { params: { slug: string } }) => {
   const { slug } = await params;
@@ -18,12 +21,14 @@ const PostPage = async ({ params }: { params: { slug: string } }) => {
 
   return (
     <div className="bg-base-white min-h-300">
-      <div className="max-w-400 flex justify-center ">
-        <div className="flex flex-col min-w-180 p-6  bg-white rounded-2xl">
+      <div className=" max-w-400 flex justify-center p-4">
+        <div className="flex flex-col w-full lg:max-w-180 p-6  bg-white rounded-2xl">
           {data && (
             <>
-              <div className="bg-accent text-soft-blue px-2 rounded-full w-max my-4">
-                <span className="font-bold text-sm">{data.category}</span>
+              <div className="bg-accent-yellow text-soft-blue px-2 rounded-full w-max my-4">
+                <span className="font-bold text-sm">
+                  {data.category.category}
+                </span>
               </div>
               <div className="flex justify-between">
                 <div className="flex gap-3 items-center">
@@ -46,19 +51,19 @@ const PostPage = async ({ params }: { params: { slug: string } }) => {
                     </p>
                   </div>
                 </div>
-                <PostMenu
-                  category={data.category}
-                  slug={slug}
-                  id={data.id}
-                  isAuthor={isAuthor}
-                />
+                {isAuthor && (
+                  <PostMenu
+                    category={data.category.category}
+                    slug={slug}
+                    id={data.id}
+                    isAuthor={isAuthor}
+                  />
+                )}
               </div>
               <h1 className="text-3xl py-4 font-bold">{data.title}</h1>
-              {data.image && (
-                <div>
-                  <div className="flex justify-center bg-white">
-                    <img src={data.image} className="h-100" />
-                  </div>
+              {data.PostImages.length > 0 && (
+                <div className="flex justify-center">
+                  <ImageGallery images={data.PostImages} alt={data.title} />
                 </div>
               )}
               {data.content && (
@@ -66,6 +71,30 @@ const PostPage = async ({ params }: { params: { slug: string } }) => {
                   <p>{data.content}</p>
                 </div>
               )}
+              <div>
+                {data.github_url ? (
+                  <Link
+                    href={data.github_url}
+                    className="flex gap-2 hover:text-secondary-gray"
+                  >
+                    <GlobeCode />
+                    <p>{data.github_url}</p>
+                  </Link>
+                ) : (
+                  ""
+                )}
+                {data.website_url ? (
+                  <Link
+                    href={data.website_url}
+                    className="flex gap-2 hover:text-secondary-gray"
+                  >
+                    <PanelsTopLeft />
+                    <p>{data.website_url}</p>
+                  </Link>
+                ) : (
+                  ""
+                )}
+              </div>
               <CommentsPost
                 postid={data.id}
                 isAuthor={isAuthor}

@@ -1,13 +1,13 @@
-import React from "react";
-import Search from "./search";
+import Navigation from "../Navigation";
 
 const Header = () => {
   return (
-    <header className="p-4 bg-base-white">
-      <div className="text-center text-4xl font-bold text-soft-blue font-fredoka">
+    <div className="p-4 bg-white flex">
+      <header className="text-center text-4xl font-bold text-soft-blue font-fredoka">
         Project Hub
-      </div>
-    </header>
+      </header>
+      <Navigation />
+    </div>
   );
 };
 

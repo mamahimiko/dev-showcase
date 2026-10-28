@@ -7,22 +7,30 @@ import { slugify } from "@/lib/supabase/slugify";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { uploadImage } from "@/lib/supabase/upload-image";
+import { getCategoriesName } from "@/lib/supabase/queries";
+
+const MAX_IMAGES = 4;
 
 export const CreatePost = async (postdata: z.infer<typeof postSchema>) => {
   const parseData = postSchema.parse(postdata);
   const supabase = await createClient();
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) throw new Error("Unauthorized access!");
 
-  const imageFile = postdata.image?.get("image");
-  if (!(imageFile instanceof File) && imageFile !== null) {
-    throw Error("Image is not in a valid format");
+  const category = await getCategoriesName(parseData.categoryId);
+  if (!category) {
+    throw new Error("Category not found");
   }
 
-  const imageUrl = imageFile ? await uploadImage(imageFile) : null;
+  const imageFiles = (postdata.images?.getAll("images") ?? []).filter(
+    (f): f is File => f instanceof File && f.size > 0,
+  );
+  if (imageFiles.length > MAX_IMAGES)
+    throw new Error(`Only ${MAX_IMAGES} images are allowed`);
 
   const { data: profile, error: profileError } = await supabase
     .from("users")
@@ -33,19 +41,40 @@ export const CreatePost = async (postdata: z.infer<typeof postSchema>) => {
   if (profileError || !profile) throw new Error("User profile not found");
 
   const slug = slugify(parseData.title);
-  const { data, error } = await supabase.from("Posts").insert([
-    {
-      ...parseData,
-      slug: slug,
+
+  const { data: post, error } = await supabase
+    .from("Posts")
+    .insert({
+      title: parseData.title,
+      content: parseData.content,
+      slug,
       author: profile.username,
       user_id: user.id,
-      category: parseData.category,
-      image: imageUrl,
-    },
-  ]);
+      category_id: category.id,
+      github_url: parseData.github,
+      website_url: parseData.website,
+    })
+    .select("id")
+    .single();
 
-  if (error) console.log(error);
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (imageFiles.length > 0) {
+    const images = await Promise.all(
+      imageFiles.map((file) => uploadImage(post.id, file)),
+    );
+    await supabase
+      .from("PostImages")
+      .insert(
+        images.map((img, i) => ({ ...img, post_id: post.id, sort_order: i })),
+      )
+      .throwOnError();
+  }
 
   revalidatePath("/");
-  redirect(`/${parseData.category}/${slug}`);
+  revalidatePath(`/${category.slug}`);
+
+  redirect(`/${category.slug}/${slug}`);
 };

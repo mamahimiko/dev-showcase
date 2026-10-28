@@ -19,7 +19,7 @@ const CommentsPost = async ({
         comments.map((comment) => (
           <div key={comment.id} className="py-4 flex gap-3">
             <div className="flex-1">
-              <Image src={avater} alt="avater" className="w-8"/>
+              <Image src={avater} alt="avater" className="w-8" />
             </div>
             <div className="w-full flex-16">
               <div className="flex justify-between">
@@ -42,7 +42,9 @@ const CommentsPost = async ({
           </div>
         ))
       ) : (
-        <h2>Start the conversation</h2>
+        <div className="p-4">
+          <h2 className="text-center font-bold">No Commnets For Now</h2>
+        </div>
       )}
     </div>
   );

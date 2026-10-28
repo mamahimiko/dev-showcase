@@ -1,12 +1,21 @@
 "use client";
 
-import { categoryList } from "@/app/data/data";
 import { LayoutList } from "lucide-react";
 import Link from "next/link";
 import { useState, useRef } from "react";
 import { useOnClickOutside } from "usehooks-ts";
 
-const CategoryMenu = () => {
+type categoryListType = {
+  id: string;
+  category: string;
+  slug: string;
+};
+
+type CategoryMenuProps = {
+  categoryList: categoryListType[];
+};
+
+const CategoryMenu = ({ categoryList }: CategoryMenuProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -20,17 +29,23 @@ const CategoryMenu = () => {
 
   return (
     <div ref={ref}>
-      <button onClick={() => handleToggle()} className="relative">
-        <span className="hidden lg:block">Categories</span>
+      <button
+        onClick={() => handleToggle()}
+        className="relative cursor-pointer hover:bg-accent p-2 rounded-full"
+      >
+        <span className="hidden lg:block font-bold ">Categories</span>
         <span className="lg:hidden">
           <LayoutList />
         </span>
       </button>
       {isOpen && (
-        <div className="absolute bg-blue-300 w-50 rounded-b-2xl">
+        <div className="absolute top-18 left-0 lg:left-30  bg-white w-full lg:w-100 rounded-b-2xl">
           <ul className="p-4">
             {categoryList.map((category) => (
-              <li key={category.id}>
+              <li
+                key={category.id}
+                className="hover:bg-purple hover:text-white p-2 rounded-full"
+              >
                 <Link href={`/${category.slug}`}>{category.category}</Link>
               </li>
             ))}

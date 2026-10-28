@@ -14,15 +14,23 @@ const SearchBox = () => {
   };
 
   const handleClick = async () => {
+    setSearchResults(null);
+
+    if (!input.trim()) return;
+
     const { data, error } = await searchPosts(input);
-    console.log(data);
-    if (error) throw new Error();
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
     setSearchResults(data);
   };
 
   return (
     <>
-      <div className="flex">
+      <div className="flex relative">
         <input
           onChange={handleChange}
           placeholder="Search for posts"
@@ -33,7 +41,7 @@ const SearchBox = () => {
           onClick={handleClick}
           className="border rounded-full p-1 bg-soft-blue text-white"
         >
-          <Search size={22}/>
+          <Search size={22} />
         </button>
       </div>
       {searchResults && (
@@ -41,9 +49,12 @@ const SearchBox = () => {
           {searchResults.map((result, index) => (
             <div
               key={index}
-              className="absolute left-4 top-19 bg-white p-4 border border-blue-800 hover:bg-gray-200"
+              className="absolute  bg-white w-60 p-4 border border-blue-800 hover:bg-gray-200"
             >
-              <Link href={`/${result.slug}`} className="block">
+              <Link
+                href={`/${result.category.category}/${result.slug}`}
+                className="block"
+              >
                 {result.title}
               </Link>
             </div>

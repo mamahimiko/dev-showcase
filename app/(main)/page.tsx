@@ -8,7 +8,7 @@ export const revalidate = 600;
 export default async function Home() {
   return (
     <div className="bg-base-white">
-      <main className="flex flex-col items-center bg-purple">
+      <main className="flex flex-col items-center bg-base-white mx-auto max-w-6xl">
         <Hero />
         <HomePostWrapper />
       </main>

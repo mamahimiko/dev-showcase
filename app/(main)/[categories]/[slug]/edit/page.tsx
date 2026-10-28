@@ -9,10 +9,16 @@ const EditPostPage = async ({ params }: { params: { slug: string } }) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
 
   const { data, error } = await getSinglePost(slug);
 
   if (user && data && user.id !== data.author.id) redirect("/");
+
+  const { data: categories } = await supabase
+    .from("Categories")
+    .select("id, slug, category")
+    .throwOnError();
 
   return (
     <div className="bg-base-white flex flex-1  flex-col items-center justify-center">
@@ -24,9 +30,13 @@ const EditPostPage = async ({ params }: { params: { slug: string } }) => {
               initialValues={{
                 title: data.title,
                 content: data.content,
-                image: data.image,
+                image: data.category_id,
+                github_url: data.github_url,
+                website_url: data.website_url,
               }}
               postId={data.id}
+              categories={categories}
+              existingImages={data.PostImages}
             />
           </>
         )}

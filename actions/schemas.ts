@@ -16,8 +16,10 @@ export const signUpSchema = z.object({
 export const postSchema = z.object({
   title: z.string().min(6, "Your title must be at least 6 characters long"),
   content: z.string().optional(),
-  category: z.string("Please put in!"),
-  image: z.instanceof(FormData).optional(),
+  categoryId: z.string("Please select a valid category"),
+  images: z.instanceof(FormData).optional(),
+  github: z.string().optional(),
+  website: z.string().optional(),
 });
 
 export const commentSchema = z.object({
