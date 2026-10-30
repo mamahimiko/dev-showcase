@@ -30,7 +30,8 @@ const EditPostPage = async ({ params }: { params: { slug: string } }) => {
               initialValues={{
                 title: data.title,
                 content: data.content,
-                image: data.category_id,
+                category_id: data.category_id,
+                image: null,
                 github_url: data.github_url,
                 website_url: data.website_url,
               }}

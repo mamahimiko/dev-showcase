@@ -22,7 +22,7 @@ const EditPageForm = ({
 }: {
   initialValues: Pick<
     Tables<"Posts">,
-    "title" | "content" | "image" | "github_url" | "website_url"
+    "title" | "content" | "category_id" | "image" | "github_url" | "website_url"
   >;
   postId: string;
   categories: CategoryType[];
@@ -38,20 +38,34 @@ const EditPageForm = ({
       .optional(),
   });
 
+  console.log("initialValues.category_id:", initialValues.category_id);
+  console.log(
+    "categories:",
+    categories.map((category) => ({
+      id: category.id,
+      slug: category.slug,
+    })),
+  );
+
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(postImageSchema),
     defaultValues: {
       title: initialValues.title,
       content: initialValues.content || undefined,
+      categoryId: initialValues.category_id,
       image: initialValues.image || undefined,
       github: initialValues.github_url || undefined,
       website: initialValues.website_url || undefined,
     },
   });
+
+  console.log("initialValues.category_id:", initialValues.category_id);
+  console.log("selected categoryId:", watch("categoryId"));
 
   const { mutate, error } = useMutation({
     mutationFn: EditPost,
@@ -69,10 +83,13 @@ const EditPageForm = ({
       <form
         onSubmit={handleSubmit(
           (values) => {
-            let imageForm = undefined;
-            if (values.image && typeof values.image !== "string") {
-              imageForm = new FormData();
-              imageForm.append("image", values.image[0]);
+            const imageForm = new FormData();
+            if (values.image) {
+              Array.from(values.image).forEach((file) => {
+                if (file.size > 0) {
+                  imageForm.append("images", file);
+                }
+              });
             }
 
             mutate({
@@ -81,6 +98,8 @@ const EditPageForm = ({
                 content: values.content,
                 categoryId: values.categoryId,
                 images: imageForm,
+                github: values.github,
+                website: values.website,
               },
               postId,
               removeImageIds,
@@ -96,7 +115,7 @@ const EditPageForm = ({
         <label htmlFor="category">Select a category</label>
         <select className="input" {...register("categoryId")}>
           {categories.map((category) => (
-            <option key={category.id} value={category.slug}>
+            <option key={category.id} value={category.id}>
               {category.category}
             </option>
           ))}

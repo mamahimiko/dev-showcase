@@ -14,12 +14,20 @@ const CommentsPost = async ({
 }) => {
   const comments = await getPostComments(postid);
   return (
-    <div className="">
+    <div className="my-10 p-2 lg:m-10 bg-gray-100 rounded-2xl">
       {comments && comments.length ? (
         comments.map((comment) => (
           <div key={comment.id} className="py-4 flex gap-3">
             <div className="flex-1">
-              <Image src={avater} alt="avater" className="w-8" />
+              {comment.userid.avatar ? (
+                <img
+                  src={comment.userid.avatar}
+                  alt="avater"
+                  className="w-10 h-10 rounded-full"
+                />
+              ) : (
+                <Image src={avater} alt="avater" className="w-8" />
+              )}
             </div>
             <div className="w-full flex-16">
               <div className="flex justify-between">

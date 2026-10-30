@@ -15,7 +15,6 @@ const Navigation = async () => {
   } = await supabase.auth.getUser();
 
   const categoryList = await getCategories();
-  console.log(categoryList);
 
   const isLoggedin = !!user;
 

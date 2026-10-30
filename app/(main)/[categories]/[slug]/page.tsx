@@ -75,10 +75,10 @@ const PostPage = async ({ params }: { params: { slug: string } }) => {
                 {data.github_url ? (
                   <Link
                     href={data.github_url}
-                    className="flex gap-2 hover:text-secondary-gray"
+                    className="flex gap-2 hover:text-soft-blue"
                   >
                     <GlobeCode />
-                    <p>{data.github_url}</p>
+                    <p className="">Github</p>
                   </Link>
                 ) : (
                   ""
@@ -86,10 +86,10 @@ const PostPage = async ({ params }: { params: { slug: string } }) => {
                 {data.website_url ? (
                   <Link
                     href={data.website_url}
-                    className="flex gap-2 hover:text-secondary-gray"
+                    className="flex gap-2 hover:text-soft-blue"
                   >
                     <PanelsTopLeft />
-                    <p>{data.website_url}</p>
+                    <p className="">Website</p>
                   </Link>
                 ) : (
                   ""

@@ -13,6 +13,7 @@ const MAX_IMAGES = 4;
 
 export const CreatePost = async (postdata: z.infer<typeof postSchema>) => {
   const parseData = postSchema.parse(postdata);
+  console.log("Create categoryId:", parseData.categoryId);
   const supabase = await createClient();
 
   const {
@@ -22,6 +23,7 @@ export const CreatePost = async (postdata: z.infer<typeof postSchema>) => {
   if (!user) throw new Error("Unauthorized access!");
 
   const category = await getCategoriesName(parseData.categoryId);
+  console.log("取得したcategory:", category);
   if (!category) {
     throw new Error("Category not found");
   }

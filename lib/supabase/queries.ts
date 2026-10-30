@@ -14,21 +14,29 @@ export const getHomePost = async (
 
 export const getSinglePost = async (slug: string) => {
   const supabase = createClient();
-  return await supabase
+
+  const { data, error } = await supabase
     .from("Posts")
     .select(
-      "id, title, slug, content, category_id, category:Categories!posts_category_id_fkey (category, slug), author (id, username, avatar, career), PostImages(id, image_url, sort_order),github_url,website_url",
+      "id, title, slug, content, category_id, category:Categories!posts_category_id_fkey (id, category, slug), author (id, username, avatar, career), PostImages(id, image_url, sort_order), github_url, website_url",
     )
     .eq("slug", slug)
-    .order("sort_order", { referencedTable: "PostImages", ascending: true })
+    .order("sort_order", {
+      referencedTable: "PostImages",
+      ascending: true,
+    })
     .single();
+
+  return { data, error };
 };
 
 export const searchPosts = async (searchTerm: string) => {
   const supabase = createClient();
   return await supabase
     .from("Posts")
-    .select("title, slug, category_id, category:Categories!posts_category_id_fkey (category, slug)")
+    .select(
+      "title, slug, category_id, category:Categories!posts_category_id_fkey (category, slug)",
+    )
     .textSearch("title", searchTerm);
 };
 
@@ -42,13 +50,19 @@ export const getCategories = async () => {
 };
 
 export const getCategoriesName = async (categoryId: string) => {
-  const supabase = createClient();
+  const supabase = await createClient();
+
   const { data, error } = await supabase
     .from("Categories")
     .select("id, category, slug")
     .eq("id", categoryId)
-    .single();
-  if (error) console.log("Error", error);
+    .maybeSingle();
+
+  if (error) {
+    console.error("getCategoriesName error:", error);
+    throw new Error(error.message);
+  }
+
   return data;
 };
 
@@ -83,7 +97,7 @@ export const getPostComments = async (postid: string) => {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("Comments")
-    .select('id, content, userid("id", "username", "career")')
+    .select('id, content, userid("id", "username", "career", "avatar")')
     .eq("postid", postid)
     .order("created_at", { ascending: false });
 

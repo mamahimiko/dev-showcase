@@ -21,9 +21,12 @@ export const EditPost = async ({
   removeImageIds?: string[];
 }) => {
   const parsedData = postSchema.parse(postdata);
+  console.log("categoryId:", parsedData.categoryId);
+  
   const supabase = await createClient();
 
   const category = await getCategoriesName(parsedData.categoryId);
+  console.log("category:", category);
   if (!category) throw new Error("Category not found");
 
   const { data: post } = await supabase
@@ -33,6 +36,8 @@ export const EditPost = async ({
       content: parsedData.content,
       category_id: category.id,
       slug: slugify(parsedData.title),
+      github_url: parsedData.github || null,
+      website_url: parsedData.website || null,
     })
     .eq("id", postId)
     .select("slug, PostImages(id, storage_path, sort_order)")
