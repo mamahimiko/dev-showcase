@@ -45,7 +45,15 @@ const SignUpForm = () => {
   });
 
   const { mutate, error, isPending } = useMutation({
-    mutationFn: SignUp,
+    mutationFn: async (userdata: z.infer<typeof signUpSchema>) => {
+      const result = await SignUp(userdata);
+
+      if (result?.success === false) {
+        throw new Error(result.message);
+      }
+
+      return result;
+    },
   });
 
   return (
