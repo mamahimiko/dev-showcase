@@ -53,7 +53,11 @@ const SignUpForm = () => {
       <form
         onSubmit={handleSubmit((values) => {
           const imageForm = new FormData();
-          if (values.image) imageForm.append("image", values.image[0]);
+          const image = values.image?.[0];
+
+          if (image instanceof File && image.size > 0) {
+            imageForm.append("image", image);
+          }
 
           mutate({
             username: values.username,

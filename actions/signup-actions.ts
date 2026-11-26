@@ -7,16 +7,30 @@ import { signUpSchema } from "./schemas";
 import { uploadImage } from "@/lib/supabase/upload-image";
 
 export const SignUp = async (userdata: z.infer<typeof signUpSchema>) => {
+  const validatedData = signUpSchema.parse(userdata);
+
+  // Validate image before creating a user
+  const imageFile = validatedData.image?.get("image") ?? null;
+
+  if (imageFile !== null && !(imageFile instanceof File)) {
+    throw new Error("Image is not in a valid format");
+  }
+
   const supabase = await createClient();
   const {
     data: { user },
     error,
-  } = await supabase.auth.signUp(userdata);
+  } = await supabase.auth.signUp({
+    email: validatedData.email,
+    password: validatedData.password,
+  });
 
-  const imageFile = userdata.image?.get("image");
+  if (error) {
+    throw new Error(error.message);
+  }
 
-  if (!(imageFile instanceof File) && imageFile !== null) {
-    throw new Error("Image is not in a valid format");
+  if (!user || !user.email) {
+    throw new Error("Failed to create a user");
   }
 
   const uploadedImage =
@@ -25,7 +39,7 @@ export const SignUp = async (userdata: z.infer<typeof signUpSchema>) => {
       : null;
 
   if (user && user.email) {
-    const { error } = await supabase.from("users").insert({
+    const { error: insertError } = await supabase.from("users").insert({
       id: user.id,
       email: user.email,
       username: userdata.username,
@@ -33,8 +47,10 @@ export const SignUp = async (userdata: z.infer<typeof signUpSchema>) => {
       career: userdata.career,
       avatar: uploadedImage?.image_url ?? null,
     });
-
-    if (error) throw error;
+    if (insertError) {
+      throw new Error(insertError.message);
+    }
   }
+
   redirect("/");
 };
